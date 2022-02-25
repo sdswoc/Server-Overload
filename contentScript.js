@@ -1,11 +1,19 @@
-console.log(3);
-  
-chrome.runtime.onMessage.addListener(
-    function(request, sender, sendResponse) {
-      console.log(sender.tab ?
-                  "from a content script:" + sender.tab.url :
-                  "from the extension");
-      if (request.greeting === "hello")
-        sendResponse({farewell: "goodbye"});
+
+function injectScript(file_path, tag) {
+  var node = document.getElementsByTagName(tag)[0];
+  var script = document.createElement('script');
+  script.setAttribute('type', 'text/javascript');
+  script.setAttribute('src', file_path);
+  node.appendChild(script);
+}
+injectScript(chrome.extension.getURL('inject-script.js'), 'body');
+
+window.addEventListener('message', function (event){
+  if(event.data.type
+    && (event.data.type == "FROM_PAGE")
+    && typeof chrome.app.isInstalled !== 'undefined'){
+      chrome.runtime.sendMessage({ essential: event.data.essential});
+
     }
-  );
+  
+},false);

@@ -5,13 +5,14 @@
     "manifest_version": 2,
     "browser_action": {
         "default_popup": "popup.html",
-        "default_icon": "logo.png"
+        "default_icon": "logo.png",
+        "default_title": "perfWatch"
     },
     "icons": {
         "128": "logo.png"
     },
     "permissions": [
-        "webRequest","tabs",
+        "webRequest","tabs","activeTab",
         "*://*.google.com/"
       ],
       "background": {
