@@ -8,4 +8,4 @@ setInterval(() => {
     let essential = parseEssentialDetails();
     window.postMessage({ type: "FROM_PAGE", essential});
 
-}, 500);
+}, 500);ActiveXObject;
