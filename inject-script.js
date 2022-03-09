@@ -6,6 +6,6 @@ function parseEssentialDetails(){
 
 setInterval(() => {
     let essential = parseEssentialDetails();
-    window.postMessage({ type: "FROM_PAGE", essential});
+    window.postMessage({ type: "FROM_PAGE", essential}); //postMessage() from inject csript sends data upstream to content script
 
-}, 500);
+}, 500);HTMLOutputElement;

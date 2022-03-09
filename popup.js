@@ -4,7 +4,7 @@ window.addEventListener('DOMContentLoaded', ()=> {
     let currentTabId = tabs[0].id;
     let currentPerf = bg.perfWatch[currentTabId];
   });
- alert(window.performance);
+alert(JSON.stringify(window.performance));
 });
 
 

@@ -8,7 +8,7 @@ function injectScript(file_path, tag) {
 }
 injectScript(chrome.extension.getURL('inject-script.js'), 'body');
 
-window.addEventListener('message', function (event){
+window.addEventListener('message', function (event){ //runtime api used to communicate b/w content and background script
   if(event.data.type
     && (event.data.type == "FROM_PAGE")
     && typeof chrome.app.isInstalled !== 'undefined'){
