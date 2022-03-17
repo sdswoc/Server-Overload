@@ -1,19 +1,23 @@
 
-function injectScript(file_path, tag) {
-  var node = document.getElementsByTagName(tag)[0];
-  var script = document.createElement('script');
-  script.setAttribute('type', 'text/javascript');
-  script.setAttribute('src', file_path);
-  node.appendChild(script);
-}
-injectScript(chrome.extension.getURL('inject-script.js'), 'body');
-
-window.addEventListener('message', function (event){ //runtime api used to communicate b/w content and background script
-  if(event.data.type
-    && (event.data.type == "FROM_PAGE")
-    && typeof chrome.app.isInstalled !== 'undefined'){
-      chrome.runtime.sendMessage({ essential: event.data.essential});
-
+/*async function logRequests() {
+    let harLog = await chrome.devtools.network.getHAR();
+    console.log(`HAR version: ${harLog.version}`);
+    for (let entry of harLog.entries) {
+      console.log(entry.request.url);
     }
+  }
+  chrome.browserAction 
   
-},false);
+  logRequestsButton.addEventListener("click", logRequests);*/
+  
+var submission_id= requestURL.substring(52);
+var ques={
+    
+}
+ques.id= submission_id;
+qname= document.getElementsByClassName("value")[1].querySelector('a').innerText;
+ques.qname= qname;
+ques.requestURL=String(z);
+
+console.log(submission_id);
+chrome.runtime.sendMessage({entry:ques});
