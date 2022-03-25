@@ -1,62 +1,33 @@
 try {
   chrome.webRequest.onBeforeSendHeaders.addListener(
-    function(details) {
-      for (var i = 0; i < details.requestHeaders.length; ++i) {
+    function(details) {if(details.method==="GET"){
+      console.log("hello");  
+      console.log(details);
+      myurl=details.url;
+      mytoken=details.requestHeaders[2].value;
+      submission_id=myurl.substring(myurl.indexOf('=')+1);
+      console.log(myurl);
+      console.log(mytoken);
+      console.log(submission_id);
+      
+      chrome.runtime.sendMessage(
+      {busy:"true"})
+
+      ;}});
+     
+      /*for (var i = 0; i < details.requestHeaders.length; ++i) {
         if (details.requestHeaders[i].name === 'User-Agent') {
           details.requestHeaders.splice(i, 1);
           break;
         }
       }
-      return {requestHeaders: details.requestHeaders};
-    },
-    {urls: ["<all_urls>"]},
-    ["blocking", "requestHeaders"]
-  ); 
- 
- chrome.webRequest.onBeforeSendHeaders.addListener(
-    function(details) {
-      var x,y,z;
-      
-      String(x) =details.requestHeaders["authority"];
-      String(y) =details.requestHeaders["path"];
-      String(z)= String(x)+String(y);
-      
-      return {requestURL: String(z)};
-      },
-     
+     return {requestHeaders: details.requestHeaders};*/
+  
+    /*{urls: ["https://www.codechef.com/api/ide/*"]},
     
-    {urls: ["https://www.codechef.com/api/ide/*"]},
-    ["blocking", "requestHeaders"]
-  ); 
- 
-  var target = "https://www.codechef.com/api/ide/submit";
-
-  /*
-  e.g.
-  "https://developer.mozilla.org/en-US/"
-  200
-  
-  or:
-  
-  "https://developer.mozilla.org/en-US/xfgkdkjdfhs"
-  404
-  */
-  function logResponse(responseDetails) {
-    console.log(responseDetails.url);
-    console.log(responseDetails.statusCode);
-    console.log(responseDetails.requestMethod);
-    console.log(response.status);
-    console.log(response.upid);
-  }
-  
-  chrome.webRequest.onCompleted.addListener(
-    logResponse,
-    {urls: [target]}
-  );
-  
- 
- 
- chrome.runtime.onIstalled.addListener(()=>{
+    ["requestHeaders"]
+  );*/
+  chrome.runtime.onInstalled.addListener(()=>{
    chrome.storage.sync.set({arr: []});
  });
   
@@ -66,7 +37,23 @@ try {
  var result=[];
  var result_busy=false;
 
+ chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+  chrome.tabs.sendMessage(tabs[0].id,{busy:"true"} , function(response) {
+    console.log(response.entry);
+    busy = true;
+    ques_array.push(response.entry);
+    ques_array.forEach((element)=>{
+      element.id=submission_id;
+      chrome.storage.sync.set({ arr: ques_array });
+      busy = false;
+      setTimeout(checker, 500, request.entry);
+    
+    
+  });
+});
+ });
  function checker(item){
+   console.log("checker")
    getResult(item);
 
    busy=true;
@@ -77,12 +64,21 @@ try {
 }
 
 function getResult(ques){
-  $.ajax({url:"https://www.codechef.com/api/ide/submit?solution_id="+ques.id,
+  console.log(20);
+  $.ajax({url:myurl,
   dataType: "json",
+  headers: [{name: 'sec-ch-ua', value: '" Not A;Brand";v="99", "Chromium";v="99", "Google Chrome";v="99"'},
+ {name: 'Accept', value: 'application/json, text/javascript '},
+ {name: 'x-csrf-token', value: '4698bd6e02c9d329e78f9d9a21525d1849251e05b3050cb969373c4a1276c061'},
+ {name: 'sec-ch-ua-mobile', value: '?0'},
+ {name: 'User-Agent', value: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWeb…ML, like Gecko) Chrome/99.0.4844.82 Safari/537.36'},
+ {name: 'X-Requested-With', value: 'XMLHttpRequest'},
+ {name: 'sec-ch-ua-platform', value: '"Windows"'}],
   success:function(r){
     if(r.result_code!="wait"){
+      console.log(30);
       badge++;
-      chrome.browserAction.setBadgeText({text: "badge"});
+      chrome.action.setBadgeText({text: "badge"});
       var s =r.result_code;
       var a=r.score;
       var n=r.time;
@@ -146,7 +142,7 @@ function getResult(ques){
     details.iconUrl="/images/wrong_chef_128.png"; break;
      }                                       
      table+="<\table>";
-     chrome.notifications.create(String(ques,id),details);
+     chrome.notifications.create(String(ques.id),details);
     
      if(r.show_status_table==="yes"){
       $.ajax({
@@ -175,34 +171,40 @@ setTimeout(getResult,2000,ques);
 
 chrome.runtime.onStartup.addListener(()=>{
   badge=0;
-  chrome.storage.sync.get("key",(result)=>{
+  console.log("startup");
+  chrome.storage.sync.get((['arr'],(result)=>{
     ques_array=result.key;
+    console.log(ques_array);
     if(ques_array.length!=0){
       busy=true;
       ques_array.forEach(function(item){
+        console.log("timeout");
         setTimeout(checker,1000,item);
       })
       busy=false;
     }
-  })
+  }))
 });
 
-chrome.runtime.onMessage.addListener((request) => {
+/*chrome.runtime.onMessage.addListener((request) => {
     //console.log(request.entry)
     while (busy) { }
     busy = true;
     ques_array.push(request.entry);
+    ques_array.forEach((element)=>{
+      element.id=submission_id;
+    })
+    
 
     chrome.storage.sync.set({ arr: ques_array });
     busy = false;
     setTimeout(checker, 500, request.entry);
-  })
+  })*/
 
 
 
 
-
-}catch (e) {
+  }catch (e) {
 console.log('error:',e);
 }
 

@@ -5,28 +5,31 @@
   "action": {
       "default_popup": "popup.html",
       
-      "default_title": "perfWatch",
+      "default_title": "Codechef",
       "default_icon": { "128": "logo.png"}
   },
   
   "icons": {
       "128": "logo.png"
   },
-  "permissions": ["notifications","storage",
-      "webRequest","tabs","activeTab","declarativeNetRequest","webRequestBlocking","declarativeNetRequestFeedback",
-      "https://www.codechef.com/api/ide/*","https://www.codechef.com/error_status_table/*"
+  "permissions": ["notifications","storage","scripting",
+      "webRequest","tabs","activeTab","declarativeNetRequest","declarativeNetRequestFeedback",
+      "https://www.codechef.com/get_submission_status/*","http://www.codechef.com/get_submission_status/*","https://www.codechef.com/error_status_table/*","https://www.codechef.com/error_status_table/*",
+      "https://www.codechef.com/api/ide/submit","https://www.codechef.com/api/ide/*","https://www.codechef.com/*"
+     
       
     ],
+    "host_permissions": ["<all_urls>"],
     "background": {
       "service_worker": "background.js"
       
     },
     "content_scripts": [
       {
-        "matches": [ "https://www.codechef.com/submit/*"],
+        "matches": [ "https://www.codechef.com/*"],
         "js": ["contentScript.js"]
       }
     ]
-
+    
 
 }
