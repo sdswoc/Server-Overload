@@ -1,4 +1,4 @@
-chrome.runtime.onMessage.addListeners((busy)=>{
+chrome.runtime.onMessage.addListener((busy)=>{
    if(busy=="true"){
   var ques={}
 

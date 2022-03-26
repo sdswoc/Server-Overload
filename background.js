@@ -46,7 +46,7 @@ try {
       element.id=submission_id;
       chrome.storage.sync.set({ arr: ques_array });
       busy = false;
-      setTimeout(checker, 500, request.entry);
+      setTimeout(checker, 500, response.entry);
     
     
   });
@@ -65,15 +65,16 @@ try {
 
 function getResult(ques){
   console.log(20);
-  $.ajax({url:myurl,
+  $.ajax({url:"myurl",
   dataType: "json",
-  headers: [{name: 'sec-ch-ua', value: '" Not A;Brand";v="99", "Chromium";v="99", "Google Chrome";v="99"'},
+  headers:  {name: 'x-csrf-token', value: '4698bd6e02c9d329e78f9d9a21525d1849251e05b3050cb969373c4a1276c061'},
+  /*{name: 'sec-ch-ua', value: '" Not A;Brand";v="99", "Chromium";v="99", "Google Chrome";v="99"'},
  {name: 'Accept', value: 'application/json, text/javascript '},
- {name: 'x-csrf-token', value: '4698bd6e02c9d329e78f9d9a21525d1849251e05b3050cb969373c4a1276c061'},
+
  {name: 'sec-ch-ua-mobile', value: '?0'},
  {name: 'User-Agent', value: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWeb…ML, like Gecko) Chrome/99.0.4844.82 Safari/537.36'},
  {name: 'X-Requested-With', value: 'XMLHttpRequest'},
- {name: 'sec-ch-ua-platform', value: '"Windows"'}],
+ {name: 'sec-ch-ua-platform', value: '"Windows"'}*/
   success:function(r){
     if(r.result_code!="wait"){
       console.log(30);
@@ -88,7 +89,7 @@ function getResult(ques){
         message: "",
         items:[]
 
-      }
+      };
       var res= {time:n, prb: ques.qname};
       var table= "<table class='status-table' cellspacing='0' cellpadding='5' width='60%'><tr><th>Sub-Task</th><th>Task #</th><th>Result<br/>(time)</th></tr>";
 
@@ -147,11 +148,13 @@ function getResult(ques){
      if(r.show_status_table==="yes"){
       $.ajax({
         url:"https://www.codechef.com/error_status_table/"+r.upid+"/",
+        datatype:"json",
+        headers: {name: 'x-csrf-token', value: '4698bd6e02c9d329e78f9d9a21525d1849251e05b3050cb969373c4a1276c061'},
         success:function(r){
               if(r=="")
-                res.error_table=table;
+              res.error_table=r;
               else
-                res.error_table=r;
+                res.error_table=table;
             }
           })
       }
@@ -173,7 +176,7 @@ chrome.runtime.onStartup.addListener(()=>{
   badge=0;
   console.log("startup");
   chrome.storage.sync.get((['arr'],(result)=>{
-    ques_array=result.key;
+    ques_array=result.arr;
     console.log(ques_array);
     if(ques_array.length!=0){
       busy=true;
